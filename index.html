@@ -353,7 +353,7 @@
             <form onsubmit="executeSchoolLogin(event)">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="schoolUser">School Username</label>
-                    <input type="text" id="schoolUser" placeholder="e.g. admin@school.edu" required>
+                    <input type="text" id="schoolUser" placeholder="Enter School Username" required>
                 </div>
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="schoolPassword">Password</label>
@@ -423,7 +423,6 @@
 
         const webReader = new FileReader();
         webReader.onload = function(e) {
-            // Generating base64 source acting as the client-side simulated AES encryption output payload blob
             processingActiveImageString = e.target.result;
             appendTerminalLog("🔒 ENCRYPTION: Binary source converted into encrypted string structure successfully.", "#48bb78");
         };
@@ -440,10 +439,7 @@
 
         appendTerminalLog("Scrubbing transaction signature logs... Packaging structural inputs.", "#ecc94b");
 
-        // Simulating E2EE asymmetric encoding
         const encryptedTextBlob = btoa(encodeURIComponent(reportContent));
-        
-        // Simulating dynamic payload structure
         const encryptedPhotoBlob = processingActiveImageString ? btoa(processingActiveImageString) : null;
 
         const packetObject = {
@@ -507,7 +503,6 @@
             const elementRow = document.createElement('div');
             elementRow.className = 'report-row';
             
-            // Layout setups parsing both text code blobs and multimedia targets
             elementRow.innerHTML = `
                 <div class="report-header">
                     <span><strong>Record Identifier Hash:</strong> ${row.id} | <strong>Area Matrix:</strong> ${row.location}</span>
@@ -544,7 +539,6 @@
         });
     }
 
-    // Dynamic decryption mapping process (Key Target Rule: 1272)
     function applyDashboardDecryptionAuthorizationSequence(id) {
         const typedKey = document.getElementById(`keyField-${id}`).value;
         const errLabel = document.getElementById(`gateError-${id}`);
@@ -556,11 +550,9 @@
             errLabel.style.display = 'none';
             appendTerminalLog(`Executing asynchronous payload decode map requests for element: ${id}`, "#ecc94b");
 
-            // Reverse Base64 processing engines
             const plaintextLog = decodeURIComponent(atob(activeRecord.cipherText));
             activeRecord.isDecrypted = true;
 
-            // Render updates onto template items layout
             document.getElementById(`plainTextField-${id}`).innerText = "Complaint Log: " + plaintextLog;
             
             if(activeRecord.cipherPhoto) {
@@ -573,7 +565,7 @@
             document.getElementById(`decryptedOutputPanel-${id}`).style.display = 'block';
             document.getElementById(`blobWrapper-${id}`).style.opacity = '0.35';
             document.getElementById(`statusLabel-${id}`).innerText = '🔓 UNLOCKED';
-            document.getElementById(`gateInterfaceFormArea-${id}`).innerHTML = ''; // Clear layout parameters gracefully
+            document.getElementById(`gateInterfaceFormArea-${id}`).innerHTML = '';
 
             appendTerminalLog("Package validation handshake completed. Decryption channel output clear.", "#48bb78");
         } else {
@@ -593,3 +585,4 @@
 </script>
 </body>
 </html>
+
