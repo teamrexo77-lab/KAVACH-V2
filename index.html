@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KAVACH V2 - Official Student Reporting Portal</title>
-    <!-- Government Website Standard Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Gayathri:wght@400;700&family=Noto+Serif+Malayalam:wght@400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,12 +16,7 @@
 
         body {
             font-family: 'Gayathri', 'Noto Serif Malayalam', 'Montserrat', sans-serif;
-            background: linear-gradient(rgba(10, 37, 64, 0.9), rgba(15, 23, 42, 0.95)), 
-                        url('https://images.unsplash.com/photo-1617886903355-9354be57756f?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #051622 0%, #0b2c4d 50%, #1a3c5e 100%);
             margin: 0;
             padding: 20px 10px;
             display: flex;
@@ -37,14 +31,14 @@
             max-width: 600px;
             background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
             overflow: hidden;
             border-top: 6px solid var(--gov-gold);
         }
 
         .gov-top-bar {
             background: #ffffff;
-            padding: 8px 15px;
+            padding: 10px 15px;
             font-size: 11px;
             color: #334155;
             font-weight: 600;
@@ -52,39 +46,40 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            letter-spacing: 0.5px;
         }
 
         .header {
             background: var(--gov-blue);
-            padding: 30px 20px;
+            padding: 35px 20px;
             text-align: center;
             color: #ffffff;
         }
 
         .emblem-placeholder {
-            font-size: 40px;
+            font-size: 45px;
             margin-bottom: 10px;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 26px;
+            font-size: 28px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             letter-spacing: 1.5px;
         }
 
         .header .sub-title {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--gov-gold);
-            margin: 5px 0 0 0;
+            margin: 6px 0 0 0;
             font-weight: 700;
         }
 
         .header .dept-title {
             color: #cbd5e1;
             font-size: 13px;
-            margin: 5px 0 0 0;
+            margin: 6px 0 0 0;
         }
 
         .form-body {
@@ -204,29 +199,27 @@
         </div>
 
         <form id="complaintForm">
-            <!-- District -->
             <div class="field-group">
                 <label for="districtSelect">Select District / ജില്ല തിരഞ്ഞെടുക്കുക</label>
-                <select id="districtSelect" onchange="loadAllSchools()" required>
+                <select id="districtSelect" onchange="updateSchoolsDirectly()" required>
                     <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
-                    <option value="KL-01">തിരുവനന്തപുരം (Thiruvananthapuram)</option>
-                    <option value="KL-02">കൊല്ലം (Kollam)</option>
-                    <option value="KL-03">പത്തനംതിട്ട (Pathanamthitta)</option>
-                    <option value="KL-04">ആലപ്പുഴ (Alappuzha)</option>
-                    <option value="KL-05">കോട്ടയം (Kottayam)</option>
-                    <option value="KL-06">ഇടുക്കി (Idukki)</option>
-                    <option value="KL-07">എറണാകുളം (Ernakulam)</option>
-                    <option value="KL-08">തൃശ്ശൂർ (Thrissur)</option>
-                    <option value="KL-09">പാലക്കാട് (Palakkad)</option>
-                    <option value="KL-10">മലപ്പുറം (Malappuram)</option>
-                    <option value="KL-11">കോഴിക്കോട് (Kozhikode)</option>
-                    <option value="KL-12">വയനാട് (Wayanad)</option>
-                    <option value="KL-13">കണ്ണൂർ (Kannur)</option>
-                    <option value="KL-14">കാസർഗോഡ് (Kasaragod)</option>
+                    <option value="Thiruvananthapuram">തിരുവനന്തപുരം (Thiruvananthapuram)</option>
+                    <option value="Kollam">കൊല്ലം (Kollam)</option>
+                    <option value="Pathanamthitta">പത്തനംതിട്ട (Pathanamthitta)</option>
+                    <option value="Alappuzha">ആലപ്പുഴ (Alappuzha)</option>
+                    <option value="Kottayam">കോട്ടയം (Kottayam)</option>
+                    <option value="Idukki">ഇടുക്കി (Idukki)</option>
+                    <option value="Ernakulam">എറണാകുളം (Ernakulam)</option>
+                    <option value="Thrissur">തൃശ്ശൂർ (Thrissur)</option>
+                    <option value="Palakkad">പാലക്കാട് (Palakkad)</option>
+                    <option value="Malappuram">മലപ്പുറം (Malappuram)</option>
+                    <option value="Kozhikode">കോഴിക്കോട് (Kozhikode)</option>
+                    <option value="Wayanad">വയനാട് (Wayanad)</option>
+                    <option value="Kannur">കണ്ണൂർ (Kannur)</option>
+                    <option value="Kasaragod">കാസർഗോഡ് (Kasaragod)</option>
                 </select>
             </div>
 
-            <!-- School Dropdown -->
             <div class="field-group">
                 <label for="schoolSelect">Select Educational Institution / സ്കൂൾ തിരഞ്ഞെടുക്കുക</label>
                 <select id="schoolSelect" required disabled>
@@ -234,13 +227,11 @@
                 </select>
             </div>
 
-            <!-- Complaint Text -->
             <div class="field-group">
                 <label for="complaintInput">Actionable Complaint Details / പരാതി വിവരങ്ങൾ</label>
-                <textarea id="complaintInput" placeholder="ലഹരി ഉപയോഗം, വിതരണം എന്നിവയുമായി ബന്ധപ്പെട്ട കൃത്യമായ വിവരങ്ങൾ ഇവിടെ രേഖപ്പെടുത്താം..." required></textarea>
+                <textarea id="complaintInput" placeholder="ലഹരി ഉപയോഗം, വിതരണം എന്നിവയുമായി ബന്ധപ്പെട്ട വിവരങ്ങൾ ഇവിടെ രേഖപ്പെടുത്താം..." required></textarea>
             </div>
 
-            <!-- Photo Evidence -->
             <div class="field-group">
                 <label>Evidence Photographic Attachment / ചിത്രങ്ങൾ <span>Optional / നിർബന്ധമില്ല</span></label>
                 <div class="upload-container">
@@ -248,7 +239,6 @@
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <button type="button" class="btn-submit" onclick="submitComplaint()">
                 🔒 Submit Confidential Report / രഹസ്യമായി സമർപ്പിക്കുക
             </button>
@@ -261,58 +251,54 @@
 </div>
 
 <script>
-// 14 ജില്ലകളിലെയും മുഴുവൻ സ്കൂളുകളുടെയും കേന്ദ്രീകൃത ഡാറ്റാബേസ് കണക്ഷൻ
-function loadAllSchools() {
+const internalSchoolData = {
+    "Thiruvananthapuram": ["SMV Govt Model HSS TVM", "Govt Model HSS Thycaut", "Cotton Hill Govt Girls HSS", "Govt HSS Medical College", "Govt Boys HSS Attingal", "Govt Girls HSS Attingal", "St. Marys HSS Pattom", "Salvation Army HSS", "Govt HSS Kilimanoor", "Govt HSS Nedumangad", "Vithura Govt HSS", "Neyyattinkara Govt HSS", "Balaramapuram Govt HSS", "Govt Model Boys HSS Chalai"],
+    "Kollam": ["Govt Model HSS Kollam", "St. Aloysius HSS Kollam", "TKM HSS Karikode", "Govt HSS Chavara", "Govt HSS Anchalummoodu", "Govt HSS Kundara", "Govt Boys HSS Kottarakara", "Govt Girls HSS Kottarakara", "Govt HSS Punalur", "Marthoma HSS Ayur", "SNDP HSS Chathannoor", "Govt HSS Karunagappally", "Sasthamcotta JNM HSS"],
+    "Pathanamthitta": ["Govt HSS Pathanamthitta", "Marthoma HSS Thiruvalla", "SNDP HSS Chenneerkara", "Govt HSS Kozhencherry", "Govt HSS Konni", "Govt Boys HSS Adoor", "Govt Girls HSS Adoor", "NSS HSS Pandalam", "Govt HSS Ranni", "St. Thomas HSS Kozhencherry", "DB HSS Thiruvalla"],
+    
+    // ആലപ്പുഴ ലിസ്റ്റിൽ നിങ്ങളുടെ സ്കൂൾ (Pope Pius XI HSS) ഏറ്റവും മുകളിൽ ആഡ് ചെയ്തിട്ടുണ്ട്
+    "Alappuzha": ["Pope Pius XI HSS Bharanikkavu", "Govt Mohammedans HSS Alappuzha", "Leo XIII HSS Alappuzha", "Govt HSS Alappuzha", "Govt Boys HSS Cherthala", "Govt Girls HSS Cherthala", "Govt HSS Kayamkulam", "Govt Boys HSS Mavelikara", "Govt Girls HSS Mavelikara", "Govt HSS Haripad", "NSS HSS Panavally", "St. Josephs HSS Alappuzha", "Govt HSS Ambalapuzha", "TD HSS Alappuzha", "SDV HSS Alappuzha"],
+    
+    "Kottayam": ["Govt Model HSS Kottayam", "MD Seminary HSS Kottayam", "CMS College HSS Kottayam", "Govt HSS Puthuppally", "Govt Boys HSS Changanassery", "Govt Girls HSS Changanassery", "Govt HSS Pala", "St. Thomas HSS Pala", "Govt HSS Kanjirappally", "Govt HSS Vaikom", "NSS HSS Karukachal", "Baker Memorial Girls HSS"],
+    "Idukki": ["Govt HSS Thodupuzha", "St. George HSS Kattappana", "Govt HSS Munnar", "Govt HSS Adimali", "Govt HSS Nedumkandam", "Govt HSS Peerumedu", "MES HSS Nedumkandam", "MKNM HSS Kumaramangalam", "STHSS Erattayar"],
+    "Ernakulam": ["Govt Model HSS Ernakulam", "St. Alberts HSS Ernakulam", "SRV Govt HSS Ernakulam", "Govt HSS Aluva", "Govt Boys HSS Perumbavoor", "Govt Girls HSS Perumbavoor", "Govt HSS Muvattupuzha", "Govt HSS Kothamangalam", "Govt HSS North Paravur", "St. Marys HSS Morakkala", "Govt HSS Tripunithura", "MGM HSS Kuruppampady"],
+    "Thrissur": ["Govt Model HSS Thrissur", "St. Thomas HSS Thrissur", "CMS HSS Thrissur", "Govt HSS Chalakudy", "Govt Boys HSS Irinjalakuda", "Govt Girls HSS Irinjalakuda", "Govt HSS Kodungallur", "Govt HSS Chavakkad", "Govt HSS Wadakkanchery", "Govt HSS Kunnamkulam", "Vivekodayam Boys HSS", "Sacred Heart CGHSS Thrissur"],
+    "Palakkad": ["Govt Victoria Girls HSS Palakkad", "PMG HSS Palakkad", "Govt HSS Cherpulassery", "Govt HSS Ottapalam", "Govt HSS Shoranur", "Govt Boys HSS Nemmara", "Govt HSS Alathur", "Govt HSS Chittur", "Govt HSS Mannarkkad", "Kallepfadi Govt HSS", "MNKM HSS Chittilamchery"],
+    "Malappuram": ["Govt Boys HSS Malappuram", "MSP HSS Malappuram", "Govt HSS Tirurangadi", "Govt HSS Manjeri", "Govt HSS Perinthalmanna", "Govt HSS Tirur", "Govt HSS Ponnani", "Govt HSS Nilambur", "Govt HSS Kottakkal", "PPTMY HSS Cherur", "Govt HSS Kondotty"],
+    "Kozhikode": ["Govt Model HSS Kozhikode", "St. Josephs Boys HSS Kozhikode", "Silver Hills HSS Kozhikode", "Govt HSS Koyilandy", "Govt HSS Vadakara", "Govt HSS Thamarassery", "Govt Boys HSS Balussery", "Govt HSS Feroke", "Providence Girls HSS", "BEM HSS Kozhikode"],
+    "Wayanad": ["Govt HSS Thalappuzha", "Govt HSS Kalpetta", "St. Marys HSS Sultan Bathery", "Govt HSS Mananthavady", "Govt HSS Meenanangadi", "Govt HSS Vythiri", "Govt HSS Panamaram", "Wayanad Orphanage HSS Muttil", "Govt HSS Pulpally", "SKMJ HSS Kalpetta"],
+    "Kannur": ["Govt Model HSS Kannur", "St. Michaels HSS Kannur", "Govt HSS Cherukunnu", "Govt HSS Thalassery", "Govt HSS Payyanur", "Govt Boys HSS Thalassery", "Govt Girls HSS Thalassery", "Govt HSS Mattannur", "Govt HSS Iritty", "Govt HSS Taliparamba", "DIS HSS Kannur"],
+    "Kasaragod": ["Govt HSS Kasaragod", "BEM HSS Kasaragod", "Govt HSS Kanhangad", "Govt HSS Hosdurg", "Govt HSS Nileshwar", "Govt HSS Cheruvathur", "Govt HSS Uppala", "Govt HSS Kumbla", "TIHSS Naimarmoola", "St. Marys HSS Bela"]
+};
+
+function updateSchoolsDirectly() {
     const districtSelect = document.getElementById("districtSelect");
     const schoolSelect = document.getElementById("schoolSelect");
     const selectedDistrict = districtSelect.value;
 
-    if (!selectedDistrict) {
+    schoolSelect.innerHTML = '<option value="">-- സ്കൂൾ തിരഞ്ഞെടുക്കുക --</option>';
+
+    if (selectedDistrict && internalSchoolData[selectedDistrict]) {
+        schoolSelect.disabled = false;
+        internalSchoolData[selectedDistrict].forEach(function(school) {
+            const option = document.createElement("option");
+            option.value = school;
+            option.textContent = school;
+            schoolSelect.appendChild(option);
+        });
+    } else {
         schoolSelect.disabled = true;
         schoolSelect.innerHTML = '<option value="">-- ആദ്യം ജില്ല തിരഞ്ഞെടുക്കുക --</option>';
-        return;
     }
-
-    schoolSelect.disabled = false;
-    schoolSelect.innerHTML = '<option value="">⏳ സ്കൂളുകൾ ലോഡ് ചെയ്യുന്നു... ദയവായി കാത്തിരിക്കുക...</option>';
-
-    // സകല സ്കൂളുകളുടെയും ഡാറ്റ അടങ്ങിയ ഒഫീഷ്യൽ സിഡിഎൻ ലിങ്ക്
-    const DATA_URL = `https://cdn.jsdelivr.net/gh/subins2000/kerala-schools-list@main/data/${selectedDistrict}.json`;
-
-    fetch(DATA_URL)
-        .then(response => {
-            if (!response.ok) throw new Error('Network error');
-            return response.json();
-        })
-        .then(schools => {
-            schoolSelect.innerHTML = '<option value="">-- സ്കൂൾ തിരഞ്ഞെടുക്കുക --</option>';
-            if(schools && schools.length > 0) {
-                schools.sort().forEach(school => {
-                    const option = document.createElement("option");
-                    option.value = school;
-                    option.textContent = school;
-                    schoolSelect.appendChild(option);
-                });
-            } else {
-                schoolSelect.innerHTML = '<option value="">സ്കൂളുകൾ ലഭ്യമല്ല</option>';
-            }
-        })
-        .catch(error => {
-            console.error("Error loading schools:", error);
-            // സിസ്റ്റം ബിസി ആയാൽ ബാക്കപ്പ് ആയി കാണിക്കാൻ
-            schoolSelect.innerHTML = '<option value="">-- സ്കൂളുകൾ നേരിട്ട് ടൈപ്പ് ചെയ്യാം --</option>';
-            alert("സ്കൂൾ ലിസ്റ്റ് ലഭ്യമാക്കാൻ സാധിച്ചില്ല. ദയവായി പേജ് ഒന്നുകൂടി റീഫ്രഷ് ചെയ്യുക.");
-        });
 }
 
 function submitComplaint() {
-    const districtSelect = document.getElementById("districtSelect");
-    const districtName = districtSelect.options[districtSelect.selectedIndex].text;
+    const districtName = document.getElementById("districtSelect").value;
     const schoolName = document.getElementById("schoolSelect").value;
     const complaintText = document.getElementById("complaintInput").value;
     const fileInput = document.getElementById("fileInput");
 
-    if (!schoolName || !complaintText) {
+    if (!districtName || !schoolName || !complaintText) {
         alert("ദയവായി എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
         return;
     }
@@ -335,7 +321,7 @@ function submitComplaint() {
 
 function sendData(url, district, school, complaint, photo) {
     const data = {
-        school: `${school} (${district})`,
+        school: `${school} (${district} District)`,
         complaint: photo ? `${complaint} [Attached Photo Base64: ${photo.substring(0, 50)}...]` : complaint
     };
 
