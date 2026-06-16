@@ -199,9 +199,6 @@
         </div>
 
         <form id="complaintForm">
-            <input type="hidden" id="userIp" name="reported_from_ip" value="Fetching...">
-            <input type="hidden" id="timestamp" name="timestamp">
-
             <div class="field-group">
                 <label for="districtSelect">Select District / ജില്ല തിരഞ്ഞെടുക്കുക</label>
                 <select id="districtSelect" required onchange="updateSchoolsDirectly()">
@@ -271,21 +268,6 @@ const internalSchoolData = {
     "Kasaragod": ["Govt HSS Kasaragod", "BEM HSS Kasaragod", "Govt HSS Kanhangad", "Govt HSS Hosdurg", "Govt HSS Nileshwar", "Govt HSS Cheruvathur", "Govt HSS Uppala", "Govt HSS Kumbla", "TIHSS Naimarmoola", "St. Marys HSS Bela"]
 };
 
-// പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ യൂസറുടെ IP-യും സമയവും ബാക്ക്ഗ്രൗണ്ടിൽ എടുക്കുന്നു
-window.onload = function() {
-    document.getElementById("timestamp").value = new Date().toLocaleString('en-IN');
-    
-    fetch('https://api.ipify.org?format=json')
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("userIp").value = data.ip;
-    })
-    .catch(error => {
-        document.getElementById("userIp").value = "Unavailable/VPN";
-        console.error("IP track failed:", error);
-    });
-};
-
 function updateSchoolsDirectly() {
     const districtSelect = document.getElementById("districtSelect");
     const schoolSelect = document.getElementById("schoolSelect");
@@ -307,12 +289,11 @@ function updateSchoolsDirectly() {
     }
 }
 
-function submitComplaint() {
+// പരാതി ഫോംസ്പ്രീയിലേക്ക് അയക്കാനുള്ള പുതിയ ഫങ്ക്ഷൻ (IP & Time അടക്കം)
+async function submitComplaint() {
     const districtName = document.getElementById("districtSelect").value;
     const schoolName = document.getElementById("schoolSelect").value;
     const complaintText = document.getElementById("complaintInput").value;
-    const trackingIp = document.getElementById("userIp").value;
-    const submissionTime = document.getElementById("timestamp").value;
     const fileInput = document.getElementById("fileInput");
 
     if (!districtName || !schoolName || !complaintText) {
@@ -320,52 +301,67 @@ function submitComplaint() {
         return;
     }
 
-    const SERVER_URL = "https://kavach-server-5kum.onrender.com/api/report"; 
+    // നിങ്ങളുടെ ഒറിജിനൽ Formspree ലിങ്ക്
+    const FORMSPREE_URL = "https://formspree.io/f/xgobqand"; 
 
-    let fileData = "";
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            fileData = reader.result;
-            sendData(SERVER_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, fileData);
+    try {
+        // 1. ലൈവായി യൂസറുടെ IP അഡ്രസ്സ് ട്രാക്ക് ചെയ്യുന്നു
+        let trackingIp = "Unavailable/VPN";
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipResponse.json();
+            trackingIp = ipData.ip;
+        } catch (e) {
+            console.error("IP track failed:", e);
         }
-        reader.readAsDataURL(file);
-    } else {
-        sendData(SERVER_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, "");
+
+        // 2. പരാതി അയക്കുന്ന കൃത്യമായ സമയം (Indian Time)
+        const submissionTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+        // ഇമേജ് അറ്റാച്ച്മെന്റ് ഉണ്ടെങ്കിൽ അത് ബേസ്64 ലോട്ട് മാറ്റുന്നു
+        let fileData = "";
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = async function() {
+                fileData = reader.result;
+                await sendToFormspree(FORMSPREE_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, fileData);
+            }
+            reader.readAsDataURL(file);
+        } else {
+            await sendToFormspree(FORMSPREE_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, "");
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        alert("തകരാർ സംഭവിച്ചു! വീണ്ടും ശ്രമിക്കുക.");
     }
 }
 
-function sendData(url, district, school, complaint, ip, time, photo) {
-    // നിങ്ങളുടെ Render സെർവറിലേക്ക് IP-യും സമയവും കൃത്യമായ ഒബ്ജക്റ്റ് ആയി അയക്കുന്നു
-    const data = {
-        school: `${school} (${district} District)`,
-        complaint: complaint,
-        reported_from_ip: ip,
-        timestamp: time,
-        photo_evidence: photo ? photo : ""
+// ഫോംസ്പ്രീയിലേക്ക് ഫെച്ച് വഴി ഡാറ്റ വിടുന്ന ഫങ്ക്ഷൻ
+async function sendToFormspree(url, district, school, complaint, ip, time, photo) {
+    const formData = {
+        District: district,
+        School: school,
+        Complaint: complaint,
+        Reported_From_IP: ip,
+        Submitted_Time: time,
+        Photo_Evidence: photo ? "Image Attached (Check Formspree Dashboard for files)" : "No Image Attached"
     };
 
-    fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if(result.success) {
-            alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു! സുരക്ഷാ വിവരങ്ങൾ റെക്കോർഡ് ചെയ്യപ്പെട്ടു."); 
-            document.getElementById("complaintForm").reset();
-            document.getElementById("schoolSelect").disabled = true;
-            window.location.reload(); // പുതിയ സമയം അപ്ഡേറ്റ് ചെയ്യാൻ റീലോഡ് ചെയ്യുന്നു
-        } else {
-            alert("സെർവർ തകരാർ: " + result.message);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("സെർവറുമായി ബന്ധപ്പെടാൻ സാധിച്ചില്ല! ഫ്രണ്ട്-എൻഡ് കണക്ഷൻ പരിശോധിക്കുക.");
+        body: JSON.stringify(formData)
     });
+
+    if (response.ok) {
+        alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു! സുരക്ഷാ വിവരങ്ങൾ റെക്കോർഡ് ചെയ്യപ്പെട്ടു."); 
+        document.getElementById("complaintForm").reset();
+        document.getElementById("schoolSelect").disabled = true;
+    } else {
+        alert("പരാതി അയക്കാൻ സാധിച്ചില്ല. ഫോംസ്പ്രീ കണക്ഷൻ പരിശോധിക്കുക.");
+    }
 }
 </script>
 </body>
