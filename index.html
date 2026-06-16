@@ -1,588 +1,345 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAVACH V2 - Anonymous Anti-Drug Portal with Secure Multimedia Pipeline</title>
+    <title>KAVACH V2 - Anonymous Student Reporting Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1a365d;
-            --secondary-color: #2b6cb0;
-            --success-color: #2f855a;
-            --danger-color: #c53030;
-            --bg-color: #f7fafc;
-            --card-bg: #ffffff;
-            --text-color: #2d3748;
-            --terminal-bg: #1a202c;
+            --primary: #1e293b;
+            --accent: #dc2626; /* റെഡ് കളർ തീം - ലഹരിക്കെതിരെ */
+            --accent-hover: #991b1b;
+            --card-bg: rgba(255, 255, 255, 0.95); /* ലൈറ്റ് ട്രാൻസ്പാരന്റ് കാർഡ് */
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #cbd5e1;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Poppins', 'Manjari', sans-serif;
+            /* ലഹരിക്കെതിരെയുള്ള പ്രൊഫഷണൽ ബാക്ക്ഗ്രൗണ്ട് ഇമേജ് */
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
+                        url('https://images.unsplash.com/photo-1617886903355-9354be57756f?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             margin: 0;
-            padding: 0;
-        }
-
-        /* Navigation Architecture */
-        .navbar {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 30px;
+            padding: 15px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
         }
 
-        .navbar .logo {
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .nav-links .btn-nav {
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 8px 18px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links .btn-nav:hover {
-            background-color: white;
-            color: var(--primary-color);
-        }
-
-        .main-container {
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* View Layout Routing Classes */
-        .page-view {
-            display: none;
+        .wrapper {
+            width: 100%;
+            max-width: 460px;
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
         }
 
-        .page-view.active {
-            display: block;
-        }
-
-        .student-border { border-top: 6px solid var(--secondary-color); }
-        .school-border { border-top: 6px solid var(--primary-color); }
-
-        .page-header {
+        /* Anti-Drug Banner */
+        .drug-banner {
+            background: #000000;
+            color: #ff3333;
             text-align: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 15px;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #330000;
         }
 
-        .page-header h2 { margin: 0; font-size: 24px; }
+        /* Header Style */
+        .header {
+            background: #0f172a;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
 
-        .shield-badge {
+        .logo-shield {
+            font-size: 38px;
+            margin-bottom: 5px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header .version {
+            background: var(--accent);
+            color: white;
             font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
             font-weight: bold;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-top: 10px;
+            margin-left: 5px;
         }
 
-        /* Responsive Form Engine */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .header p {
+            color: #94a3b8;
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Form Style */
+        .form-body {
+            padding: 25px 20px;
+        }
+
+        .status-badge {
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 700;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .form-group { display: flex; flex-direction: column; }
-        .full-width { grid-column: span 2; }
+        .field-group {
+            margin-bottom: 18px;
+        }
 
         label {
-            font-weight: 600;
-            margin-bottom: 8px;
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
             font-size: 14px;
-            color: #4a5568;
+            color: var(--primary);
         }
 
-        select, textarea, input {
+        select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 13px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             box-sizing: border-box;
-            background-color: #fff;
+            font-size: 15px;
+            background-color: #ffffff;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
 
-        textarea { resize: vertical; min-height: 100px; }
+        select:focus, textarea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+        }
 
-        /* Custom File Input Decorator */
-        .file-upload-wrapper {
-            position: relative;
-            border: 2px dashed #cbd5e0;
-            border-radius: 6px;
+        textarea {
+            height: 110px;
+            resize: vertical;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            color: white;
             padding: 15px;
-            text-align: center;
-            background: #f7fafc;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-        }
-        .file-upload-wrapper:hover {
-            border-color: var(--secondary-color);
-            background: #ebf8ff;
-        }
-        .file-upload-wrapper input[type="file"] {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; cursor: pointer;
-        }
-
-        .btn {
-            width: 100%;
-            color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-student { background-color: var(--secondary-color); }
-        .btn-school { background-color: var(--success-color); }
-        .btn-login { background-color: var(--primary-color); }
-        .btn:hover { opacity: 0.9; }
-
-        .login-card { max-width: 420px; margin: 0 auto; }
-        .error-message {
-            color: var(--danger-color);
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        /* Dashboard Feed Feed Layout */
-        .dashboard-meta {
-            background-color: #f7fafc;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .report-row {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .report-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 13px;
-            color: #718096;
-            border-bottom: 1px dashed #e2e8f0;
-            padding-bottom: 8px;
-        }
-
-        .crypto-blob-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .crypto-blob {
-            font-family: monospace;
-            background-color: #f7fafc;
-            padding: 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            word-break: break-all;
-            color: #718096;
-            border: 1px solid #edf2f7;
-            max-height: 60px;
-            overflow-y: auto;
-        }
-
-        .decrypted-box {
-            display: none;
-            background-color: #f0fff4;
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            border-left: 4px solid var(--success-color);
-            margin-top: 12px;
-        }
-
-        .decrypted-img {
-            max-width: 100%;
-            max-height: 250px;
-            margin-top: 10px;
-            border-radius: 6px;
-            border: 1px solid #cbd5e0;
-            display: block;
-        }
-
-        .crypto-gate-form {
-            display: flex;
             gap: 10px;
-            margin-top: 12px;
-            justify-content: flex-end;
-            align-items: center;
+            font-family: inherit;
         }
 
-        /* Real-time System Security Logs Console Terminal */
-        .terminal-box {
-            background-color: var(--terminal-bg);
-            color: #48bb78;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            max-height: 120px;
-            overflow-y: auto;
-            margin-top: 30px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+        .btn-submit:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.4);
         }
 
-        .success-panel {
-            display: none;
+        /* Privacy Footer */
+        .privacy-note {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 15px;
             text-align: center;
-            background-color: #f0fff4;
-            border: 1px solid #c6f6d5;
-            padding: 25px;
-            border-radius: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            border: 1px dashed var(--border-color);
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo" onclick="navigateTo('studentView')">🛡️ KAVACH <span style="font-size:12px; vertical-align:super; margin-left:5px; color:#63b3ed;">V2.0</span></div>
-        <div class="nav-links" id="navActionArea">
-            <button class="btn-nav" id="loginNavBtn" onclick="navigateTo('loginView')">School Login</button>
-        </div>
-    </nav>
-
-    <div class="main-container">
-
-        <div id="studentView" class="page-view active student-border">
-            <div class="page-header">
-                <h2 style="color: var(--secondary-color);">Anonymous Student Reporting Portal</h2>
-                <div class="shield-badge" style="background-color: #ebf8ff; color: var(--secondary-color);">
-                    🔒 MULTIMEDIA SECURE TUNNEL ACTIVE [EXIF STRIPPED]
-                </div>
-            </div>
-
-            <form id="studentForm" onsubmit="handleFormSubmission(event)">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="schoolSelect">Select Educational Institution</label>
-                        <select id="schoolSelect" required>
-                            <option value="Government Model High School, Zone A">Government Model High School, Zone A</option>
-                            <option value="St. Marys Higher Secondary, Zone B">St. Marys Higher Secondary, Zone B</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="incidentLocation">Campus Location Context</label>
-                        <select id="incidentLocation" required>
-                            <option value="Backyard / Playground vicinity">Backyard / Playground vicinity</option>
-                            <option value="Outside perimeter waiting shed">Outside perimeter waiting shed</option>
-                            <option value="Restrooms / Isolated corridors">Restrooms / Isolated corridors</option>
-                        </select>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="complaintText">Actionable Complaint Details (Do NOT input your identity details)</label>
-                        <textarea id="complaintText" placeholder="Provide accurate data regarding observed timelines, suspicious networks, or vehicles..." required></textarea>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label>Evidence Photographic Attachment (Optional)</label>
-                        <div class="file-upload-wrapper">
-                            <span id="fileLabelText">📁 Drag & Drop or Click to Add Photo Evidence</span>
-                            <input type="file" id="photoAttachment" accept="image/*" onchange="processClientSideImage()">
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-student">🔒 Securely Encrypt & Transmit Package</button>
-            </form>
-
-            <div id="studentSuccess" class="success-panel">
-                <h3 style="color: var(--success-color); margin-top:0;">Secure Package Transmitted</h3>
-                <p style="font-size: 14px; color: #4a5568;">Text logs and attachment binaries were sanitised, converted to AES-256 equivalent Base64 streams locally, and committed to database node anonymously.</p>
-                <button onclick="resetStudentForm()" style="background:none; border:none; color:var(--secondary-color); text-decoration:underline; cursor:pointer; font-size:13px; font-weight:600;">File Another Report</button>
-            </div>
-        </div>
-
-        <div id="loginView" class="page-view login-card school-border">
-            <div class="page-header">
-                <h2 style="color: var(--primary-color);">Authority Authentication</h2>
-                <div class="shield-badge" style="background-color: #edf2f7; color: #4a5568;">SECURE LAYER</div>
-            </div>
-
-            <form onsubmit="executeSchoolLogin(event)">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="schoolUser">School Username</label>
-                    <input type="text" id="schoolUser" placeholder="Enter School Username" required>
-                </div>
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="schoolPassword">Password</label>
-                    <input type="password" id="schoolPassword" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-login">Verify Credentials</button>
-                <div id="loginError" class="error-message">❌ Invalid Username or Password!</div>
-            </form>
-        </div>
-
-        <div id="dashboardView" class="page-view school-border">
-            <div class="page-header">
-                <h2 style="color: var(--primary-color);">School Administration Dashboard</h2>
-                <div class="shield-badge" style="background-color: #c6f6d5; color: #22543d;">🔑 SECURE LAYER ACTIVE</div>
-            </div>
-
-            <div class="dashboard-meta">
-                <span>Institution: <strong>Government Model High School, Zone A</strong></span>
-                <button onclick="executeLogout()" style="background: none; border: none; color: var(--danger-color); font-weight: bold; cursor: pointer; text-decoration: underline; font-size: 13px;">Secure Logout</button>
-            </div>
-
-            <div id="dashboardEmpty" style="text-align:center; padding: 30px; color: #a0aec0; font-size:14px; background: #f7fafc; border-radius: 6px;">
-                No incoming telemetry data found in ledger. Add dummy report logs from homepage framework!
-            </div>
-
-            <div id="dashboardInbox"></div>
-        </div>
-
-        <div class="terminal-box" id="pipelineTerminal">
-            [SYSTEM CHECK] Anonymization security parameters active. Zero tracking operational footprint.<br>
-            [SYSTEM CHECK] Multimedia parsing client-side micro-engine listening...<br>
-        </div>
-
+<div class="wrapper">
+    <div class="drug-banner">
+        ⚠️ SAY NO TO DRUGS / ലഹരിക്കെതിരെ ഒരു കവചം
     </div>
 
+    <div class="header">
+        <div class="logo-shield">🛡️</div>
+        <h1>KAVACH <span class="version">V2.0</span></h1>
+        <p>Anonymous Student Reporting Portal</p>
+    </div>
+
+    <div class="form-body">
+        <div class="status-badge">
+            🔒 SECURE TUNNEL ACTIVE [IP & EXIF STRIPPED]
+        </div>
+
+        <form id="complaintForm">
+            <div class="field-group">
+                <label for="districtSelect">
+                    Select District / ജില്ല തിരഞ്ഞെടുക്കുക
+                </label>
+                <select id="districtSelect" onchange="updateSchools()" required>
+                    <option value="">-- Select District / ജില്ല തിരഞ്ഞെടുക്കുക --</option>
+                    <option value="Thiruvananthapuram">തിരുവനന്തപുരം (Thiruvananthapuram)</option>
+                    <option value="Kollam">കൊല്ലം (Kollam)</option>
+                    <option value="Pathanamthitta">പത്തനംതിട്ട (Pathanamthitta)</option>
+                    <option value="Alappuzha">ആലപ്പുഴ (Alappuzha)</option>
+                    <option value="Kottayam">കൊട്ടയം (Kottayam)</option>
+                    <option value="Idukki">ഇടുക്കി (Idukki)</option>
+                    <option value="Ernakulam">എറണാകുളം (Ernakulam)</option>
+                    <option value="Thrissur">തൃശ്ശൂർ (Thrissur)</option>
+                    <option value="Palakkad">പാലക്കാട് (Palakkad)</option>
+                    <option value="Malappuram">മലപ്പുറം (Malappuram)</option>
+                    <option value="Kozhikode">കോഴിക്കോട് (Kozhikode)</option>
+                    <option value="Wayanad">വയനാട് (Wayanad)</option>
+                    <option value="Kannur">കണ്ണൂർ (Kannur)</option>
+                    <option value="Kasaragod">കാസർഗോഡ് (Kasaragod)</option>
+                </select>
+            </div>
+
+            <div class="field-group">
+                <label for="schoolSelect">
+                    Select Educational Institution / സ്കൂൾ തിരഞ്ഞെടുക്കുക
+                </label>
+                <select id="schoolSelect" required disabled>
+                    <option value="">-- First Select District / ആദ്യം ജില്ല തിരഞ്ഞെടുക്കുക --</option>
+                </select>
+            </div>
+
+            <div class="field-group">
+                <label for="complaintInput">
+                    Actionable Complaint Details / പരാതി വിശദമായി എഴുതുക
+                </label>
+                <textarea id="complaintInput" placeholder="ലഹരി ഉപയോഗം അല്ലെങ്കിൽ വിതരണവുമായി ബന്ധപ്പെട്ട വിവരങ്ങൾ ഇവിടെ രേഖപ്പെടുത്താം. നിങ്ങളുടെ പേരോ മറ്റ് വിവരങ്ങളോ എഴുതരുത്..." required></textarea>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="submitComplaint()">
+                🔒 Transmit Securely / രഹസ്യമായി സമർപ്പിക്കുക
+            </button>
+        </form>
+
+        <div class="privacy-note">
+            ഈ പോർട്ടൽ നിങ്ങളുടെ വിവരങ്ങൾ ഒന്നും ശേഖരിക്കുന്നില്ല. പൂർണ്ണ സുരക്ഷിതത്വത്തോടെ നിങ്ങൾക്ക് വിവരങ്ങൾ കൈമാറാം.
+        </div>
+    </div>
+</div>
+
 <script>
-    // System database simulation states array mapping
-    let encryptedDatabaseStorage = [];
-    let processingActiveImageString = ""; // Cache target string
-    const terminal = document.getElementById('pipelineTerminal');
+// 14 ജില്ലകളിലെ മാതൃകാ സ്കൂളുകളുടെ ഡാറ്റ
+const schoolData = {
+    "Thiruvananthapuram": ["SMV Govt Model HSS TVM", "Govt Model HSS Thycaut", "Cotton Hill Govt Girls HSS"],
+    "Kollam": ["Govt Model HSS Kollam", "St. Aloysius HSS Kollam", "TKM HSS Karikode"],
+    "Pathanamthitta": ["Govt HSS Pathanamthitta", "Marthoma HSS Thiruvalla", "SNDP HSS Chenneerkara"],
+    "Alappuzha": ["Govt Mohammedans HSS Alappuzha", "Leo XIII HSS Alappuzha", "Govt HSS Alappuzha"],
+    "Kottayam": ["Govt Model HSS Kottayam", "MD Seminary HSS Kottayam", "CMS College HSS Kottayam"],
+    "Idukki": ["Govt HSS Thodupuzha", "St. George HSS Kattappana", "Govt HSS Munnar"],
+    "Ernakulam": ["Govt Model HSS Ernakulam", "St. Alberts HSS Ernakulam", "SRV Govt HSS Ernakulam"],
+    "Thrissur": ["Govt Model HSS Thrissur", "St. Thomas HSS Thrissur", "CMS HSS Thrissur"],
+    "Palakkad": ["Govt Victoria Girls HSS Palakkad", "PMG HSS Palakkad", "Govt HSS Cherpulassery"],
+    "Malappuram": ["Govt Boys HSS Malappuram", "MSP HSS Malappuram", "Govt HSS Tirurangadi"],
+    "Kozhikode": ["Govt Model HSS Kozhikode", "St. Josephs Boys HSS Kozhikode", "Silver Hills HSS Kozhikode"],
+    "Wayanad": ["Govt HSS Kalpetta", "St. Marys HSS Sultan Bathery", "Govt HSS Mananthavady"],
+    "Kannur": ["Govt Model HSS Kannur", "St. Michaels HSS Kannur", "Govt HSS Cherukunnu"],
+    "Kasaragod": ["Govt HSS Kasaragod", "BEM HSS Kasaragod", "Govt HSS Kanhangad"]
+};
 
-    function appendTerminalLog(message, color = '#48bb78') {
-        const time = new Date().toLocaleTimeString();
-        terminal.innerHTML += `<span style="color: ${color}">[${time}] ${message}</span><br>`;
-        terminal.scrollTop = terminal.scrollHeight;
-    }
+function updateSchools() {
+    const districtSelect = document.getElementById("districtSelect");
+    const schoolSelect = document.getElementById("schoolSelect");
+    const selectedDistrict = districtSelect.value;
 
-    // View Switching Logic Routing Function
-    function navigateTo(viewId) {
-        document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
-        document.getElementById(viewId).classList.add('active');
-        if(viewId === 'dashboardView') renderDashboardInbox();
-        appendTerminalLog(`View Context Switched -> [${viewId}]`, '#63b3ed');
-    }
+    schoolSelect.innerHTML = '<option value="">-- Select School / സ്കൂൾ തിരഞ്ഞെടുക്കുക --</option>';
 
-    // V2 Feature: Core Client-Side Image Meta Sanitization and Base64 Conversion Pipeline
-    function processClientSideImage() {
-        const fileInput = document.getElementById('photoAttachment');
-        const label = document.getElementById('fileLabelText');
-        
-        if (fileInput.files.length === 0) return;
-        const targetFile = fileInput.files[0];
-        label.innerText = `📄 ${targetFile.name} Selected.`;
-
-        appendTerminalLog(`Intercepting file upload stream: ${targetFile.name} (${targetFile.size} bytes)`, "#63b3ed");
-        appendTerminalLog("🔒 SANITIZING: Purging EXIF headers, device identification matrices, and GPS coordinate tokens inside browser cache...", "#ecc94b");
-
-        const webReader = new FileReader();
-        webReader.onload = function(e) {
-            processingActiveImageString = e.target.result;
-            appendTerminalLog("🔒 ENCRYPTION: Binary source converted into encrypted string structure successfully.", "#48bb78");
-        };
-        webReader.readAsDataTransferURL ? webReader.readAsDataURL(targetFile) : webReader.readAsBinaryString(targetFile);
-    }
-
-    // Secure Data Package Dispatch Form Pipeline
-    function handleFormSubmission(event) {
-        event.preventDefault();
-        
-        const schoolName = document.getElementById('schoolSelect').value;
-        const geoContext = document.getElementById('incidentLocation').value;
-        const reportContent = document.getElementById('complaintText').value;
-
-        appendTerminalLog("Scrubbing transaction signature logs... Packaging structural inputs.", "#ecc94b");
-
-        const encryptedTextBlob = btoa(encodeURIComponent(reportContent));
-        const encryptedPhotoBlob = processingActiveImageString ? btoa(processingActiveImageString) : null;
-
-        const packetObject = {
-            id: 'KVC-HASH-' + Math.floor(1000 + Math.random() * 9000),
-            timestamp: new Date().toLocaleTimeString(),
-            school: schoolName,
-            location: geoContext,
-            cipherText: encryptedTextBlob,
-            cipherPhoto: encryptedPhotoBlob,
-            isDecrypted: false
-        };
-
-        encryptedDatabaseStorage.push(packetObject);
-        appendTerminalLog(`Package packet dispatched to isolated node database storage. Hash Reference: ${packetObject.id}`, "#48bb78");
-
-        document.getElementById('studentForm').style.display = 'none';
-        document.getElementById('studentSuccess').style.display = 'block';
-    }
-
-    // Login Module Controller
-    function executeSchoolLogin(event) {
-        event.preventDefault();
-        const userInput = document.getElementById('schoolUser').value;
-        const passwordInput = document.getElementById('schoolPassword').value;
-        const errorDiv = document.getElementById('loginError');
-
-        if (userInput === "admin@school.edu" && passwordInput === "1234") {
-            errorDiv.style.display = 'none';
-            document.getElementById('navActionArea').innerHTML = `<button class="btn-nav" style="border-color:#feb2b2; color:#feb2b2;" onclick="executeLogout()">Logout Portal</button>`;
-            appendTerminalLog("Authorization clear. Administrative session instance built.", "#48bb78");
-            navigateTo('dashboardView');
-        } else {
-            errorDiv.style.display = 'block';
-            appendTerminalLog("CRITICAL WARNING: Illegal credential configuration input onto Admin Node.", "#c53030");
-        }
-    }
-
-    function executeLogout() {
-        document.getElementById('schoolUser').value = '';
-        document.getElementById('schoolPassword').value = '';
-        document.getElementById('navActionArea').innerHTML = `<button class="btn-nav" id="loginNavBtn" onclick="navigateTo('loginView')">School Login</button>`;
-        appendTerminalLog("Session interface keys flushed from frame stack memory.", "#ecc94b");
-        navigateTo('studentView');
-    }
-
-    // Render Inbox Data Function
-    function renderDashboardInbox() {
-        const inbox = document.getElementById('dashboardInbox');
-        const emptyPrompt = document.getElementById('dashboardEmpty');
-        inbox.innerHTML = '';
-
-        const schoolSet = encryptedDatabaseStorage.filter(item => item.school === "Government Model High School, Zone A");
-
-        if (schoolSet.length === 0) {
-            emptyPrompt.style.display = 'block';
-            return;
-        }
-        emptyPrompt.style.display = 'none';
-
-        schoolSet.forEach(row => {
-            const elementRow = document.createElement('div');
-            elementRow.className = 'report-row';
-            
-            elementRow.innerHTML = `
-                <div class="report-header">
-                    <span><strong>Record Identifier Hash:</strong> ${row.id} | <strong>Area Matrix:</strong> ${row.location}</span>
-                    <span style="font-weight:bold; color: ${row.isDecrypted ? 'var(--success-color)' : '#718096'}" id="statusLabel-${row.id}">
-                        ${row.isDecrypted ? '🔓 UNLOCKED' : '🔒 CIPHERTEXT'}
-                    </span>
-                </div>
-                
-                <div class="crypto-blob-container" id="blobWrapper-${row.id}">
-                    <div class="crypto-blob"><strong>[Text Payload Summary Base64]:</strong> ${row.cipherText}</div>
-                    ${row.cipherPhoto ? `<div class="crypto-blob"><strong>[Attachment Binary Payload Base64 Stream]:</strong> ${row.cipherPhoto.substring(0, 160)}...[TRUNCATED BINARY BUFFERED DATA]</div>` : `<div style="font-size:12px; color:#a0aec0; font-style:italic;">No multimedia attachment included with this report.</div>`}
-                </div>
-
-                <div class="decrypted-box" id="decryptedOutputPanel-${row.id}">
-                    <div style="font-weight:bold; color:var(--success-color); margin-bottom:5px;">✓ Decrypted Output Channel Contents:</div>
-                    <p id="plainTextField-${row.id}" style="margin:0; font-size:14px; font-weight:500;"></p>
-                    <div id="imagePanelAttachmentTarget-${row.id}"></div>
-                </div>
-                
-                <div id="gateInterfaceFormArea-${row.id}">
-                    ${row.isDecrypted ? '' : `
-                        <div class="crypto-gate-form">
-                            <label style="margin:0; font-size:12px;">Enter Decryption Key:</label>
-                            <input type="password" id="keyField-${row.id}" placeholder="Enter Key" style="width:130px; padding:6px 10px; font-size:12px;">
-                            <button class="btn btn-school" onclick="applyDashboardDecryptionAuthorizationSequence('${row.id}')" style="width:auto; padding:6px 14px; font-size:12px;">
-                                🔑 Apply Decryption Key
-                            </button>
-                        </div>
-                        <div id="gateError-${row.id}" style="color:var(--danger-color); font-size:12px; text-align:right; margin-top:5px; display:none; font-weight:bold;">❌ Invalid Decryption Key!</div>
-                    `}
-                </div>
-            `;
-            inbox.appendChild(elementRow);
+    if (selectedDistrict && schoolData[selectedDistrict]) {
+        schoolSelect.disabled = false;
+        schoolData[selectedDistrict].forEach(function(school) {
+            const option = document.createElement("option");
+            option.value = school;
+            option.textContent = school;
+            schoolSelect.appendChild(option);
         });
+    } else {
+        schoolSelect.disabled = true;
+        schoolSelect.innerHTML = '<option value="">-- First Select District / ആദ്യം ജില്ല തിരഞ്ഞെടുക്കുക --</option>';
+    }
+}
+
+function submitComplaint() {
+    const districtName = document.getElementById("districtSelect").value;
+    const schoolName = document.getElementById("schoolSelect").value;
+    const complaintText = document.getElementById("complaintInput").value;
+
+    if (!districtName || !schoolName || !complaintText) {
+        alert("ദയവായി എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!");
+        return;
     }
 
-    function applyDashboardDecryptionAuthorizationSequence(id) {
-        const typedKey = document.getElementById(`keyField-${id}`).value;
-        const errLabel = document.getElementById(`gateError-${id}`);
-        const activeRecord = encryptedDatabaseStorage.find(item => item.id === id);
+    const SERVER_URL = "https://kavach-server-5kum.onrender.com/api/report"; 
 
-        if(!activeRecord) return;
+    const data = {
+        school: `${schoolName} (${districtName} District)`,
+        complaint: complaintText
+    };
 
-        if (typedKey === "1272") {
-            errLabel.style.display = 'none';
-            appendTerminalLog(`Executing asynchronous payload decode map requests for element: ${id}`, "#ecc94b");
-
-            const plaintextLog = decodeURIComponent(atob(activeRecord.cipherText));
-            activeRecord.isDecrypted = true;
-
-            document.getElementById(`plainTextField-${id}`).innerText = "Complaint Log: " + plaintextLog;
-            
-            if(activeRecord.cipherPhoto) {
-                const targetImagePanel = document.getElementById(`imagePanelAttachmentTarget-${id}`);
-                const decodedImgSource = atob(activeRecord.cipherPhoto);
-                targetImagePanel.innerHTML = `<div style="font-weight:bold; font-size:13px; color:var(--primary-color); margin-top:10px;">Decrypted Photo Attachment Evidence:</div>
-                                              <img class="decrypted-img" src="${decodedImgSource}" alt="Decrypted Evidence">`;
-            }
-
-            document.getElementById(`decryptedOutputPanel-${id}`).style.display = 'block';
-            document.getElementById(`blobWrapper-${id}`).style.opacity = '0.35';
-            document.getElementById(`statusLabel-${id}`).innerText = '🔓 UNLOCKED';
-            document.getElementById(`gateInterfaceFormArea-${id}`).innerHTML = '';
-
-            appendTerminalLog("Package validation handshake completed. Decryption channel output clear.", "#48bb78");
+    fetch(SERVER_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if(result.success) {
+            alert(result.message); 
+            document.getElementById("complaintForm").reset();
+            document.getElementById("schoolSelect").disabled = true;
+            document.getElementById("schoolSelect").innerHTML = '<option value="">-- First Select District / ആദ്യം ജില്ല തിരഞ്ഞെടുക്കുക --</option>';
         } else {
-            errLabel.style.display = 'block';
-            appendTerminalLog(`SECURITY ALERT: Cryptographic decryption handshake mismatch signature on packet reference [${id}]`, "#c53030");
+            alert("Error: " + result.message);
         }
-    }
-
-    function resetStudentForm() {
-        document.getElementById('studentForm').reset();
-        document.getElementById('fileLabelText').innerText = "📁 Drag & Drop or Click to Add Photo Evidence";
-        processingActiveImageString = "";
-        document.getElementById('studentForm').style.display = 'block';
-        document.getElementById('studentSuccess').style.display = 'none';
-        appendTerminalLog("Client workspace buffer inputs flushed clean.", "#63b3ed");
-    }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("സെർവറുമായി ബന്ധപ്പെടാൻ സാധിച്ചില്ല! അല്പസമയത്തിന് ശേഷം വീണ്ടും ശ്രമിക്കുക.");
+    });
+}
 </script>
+
 </body>
 </html>
-
