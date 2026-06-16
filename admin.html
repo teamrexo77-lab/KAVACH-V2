@@ -88,12 +88,12 @@
     
     <div class="form-group">
         <label for="username">Admin ID / യൂസർനെയിം</label>
-        <input type="text" id="username" placeholder="admin@school.edu">
+        <input type="text" id="username" placeholder="യൂസർനെയിം ടൈപ്പ് ചെയ്യുക">
     </div>
 
     <div class="form-group">
         <label for="password">Password / പാസ്‌വേഡ്</label>
-        <input type="password" id="password" placeholder="••••••••">
+        <input type="password" id="password" placeholder="പാസ്‌വേഡ് ടൈപ്പ് ചെയ്യുക">
     </div>
 
     <button type="button" class="btn-login" onclick="checkLogin()">Login / പ്രവേശിക്കുക</button>
@@ -107,15 +107,14 @@ function checkLogin() {
     const passInp = document.getElementById("password").value;
     const errorMsg = document.getElementById("errorMsg");
 
-    // നിങ്ങൾ ആവശ്യപ്പെട്ട യൂസർനെയിമും പാസ്‌വേഡും ഇവിടെ സെറ്റ് ചെയ്തിരിക്കുന്നു
+    // ലോഗിൻ ഐഡിയും പാസ്‌വേഡും
     const correctUsername = "admin@school.edu";
-    const correctPassword = "Kavach@2026"; // നിങ്ങൾക്ക് വേണമെങ്കിൽ ഈ പാസ്‌വേഡ് മാറ്റാം
+    const correctPassword = "Kavach@2026"; 
 
     if (userInp === correctUsername && passInp === correctPassword) {
         errorMsg.style.display = "none";
         alert("ലോഗിൻ വിജയകരമായി പൂർത്തിയായി!");
-        
-        // ലോഗിൻ ആയാൽ നേരെ നിങ്ങളുടെ Formspree ഇൻബോക്സിലേക്ക് പോകുന്ന ലിങ്ക്
+        // ശരിയാണെങ്കിൽ നേരിട്ട് നിങ്ങളുടെ ഫോംസ്പ്രീ സബ്മിഷൻ പേജിലേക്ക് പോകും
         window.location.href = "https://formspree.io/forms/xgobqand/submissions";
     } else {
         errorMsg.style.display = "block";
