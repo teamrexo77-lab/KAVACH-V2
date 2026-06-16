@@ -87,9 +87,9 @@
         }
 
         .security-banner {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            color: #166534;
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #991b1b;
             padding: 12px;
             border-radius: 6px;
             font-size: 13px;
@@ -195,13 +195,16 @@
 
     <div class="form-body">
         <div class="security-banner">
-            🔒 END-TO-END ENCRYPTED | 100% ANONYMITY GUARANTEED
+            ⚠️ SECURITY NOTICE: YOUR NETWORK IP ADDRESS AND TIMESTAMP WILL BE LOGGED FOR VERIFICATION
         </div>
 
         <form id="complaintForm">
+            <input type="hidden" id="userIp" name="reported_from_ip" value="Fetching...">
+            <input type="hidden" id="timestamp" name="timestamp">
+
             <div class="field-group">
                 <label for="districtSelect">Select District / ജില്ല തിരഞ്ഞെടുക്കുക</label>
-                <select id="districtSelect" onchange="updateSchoolsDirectly()" required>
+                <select id="districtSelect" required onchange="updateSchoolsDirectly()">
                     <option value="">-- തിരഞ്ഞെടുക്കുക --</option>
                     <option value="Thiruvananthapuram">തിരുവനന്തപുരം (Thiruvananthapuram)</option>
                     <option value="Kollam">കൊല്ലം (Kollam)</option>
@@ -246,7 +249,7 @@
     </div>
 
     <div class="gov-footer">
-        ഈ പോർട്ടൽ വഴി അയക്കുന്ന വിവരങ്ങൾ പൂർണ്ണമായും രഹസ്യമായിരിക്കും. സിസ്റ്റം നിങ്ങളുടെ വ്യക്തിവിവരങ്ങൾ ഒന്നും ശേഖരിക്കുന്നതല്ല.
+        ഈ പോർട്ടൽ വഴി അയക്കുന്ന വിവരങ്ങൾ പരിശോധിക്കുന്നതിനായി സിസ്റ്റം സുരക്ഷാ മാനദണ്ഡങ്ങൾ അനുസരിച്ച് പരാതിക്കാരന്റെ നെറ്റ്‌വർക്ക് വിവരങ്ങൾ രേഖപ്പെടുത്തുന്നതാണ്.
     </div>
 </div>
 
@@ -255,10 +258,7 @@ const internalSchoolData = {
     "Thiruvananthapuram": ["SMV Govt Model HSS TVM", "Govt Model HSS Thycaut", "Cotton Hill Govt Girls HSS", "Govt HSS Medical College", "Govt Boys HSS Attingal", "Govt Girls HSS Attingal", "St. Marys HSS Pattom", "Salvation Army HSS", "Govt HSS Kilimanoor", "Govt HSS Nedumangad", "Vithura Govt HSS", "Neyyattinkara Govt HSS", "Balaramapuram Govt HSS", "Govt Model Boys HSS Chalai"],
     "Kollam": ["Govt Model HSS Kollam", "St. Aloysius HSS Kollam", "TKM HSS Karikode", "Govt HSS Chavara", "Govt HSS Anchalummoodu", "Govt HSS Kundara", "Govt Boys HSS Kottarakara", "Govt Girls HSS Kottarakara", "Govt HSS Punalur", "Marthoma HSS Ayur", "SNDP HSS Chathannoor", "Govt HSS Karunagappally", "Sasthamcotta JNM HSS"],
     "Pathanamthitta": ["Govt HSS Pathanamthitta", "Marthoma HSS Thiruvalla", "SNDP HSS Chenneerkara", "Govt HSS Kozhencherry", "Govt HSS Konni", "Govt Boys HSS Adoor", "Govt Girls HSS Adoor", "NSS HSS Pandalam", "Govt HSS Ranni", "St. Thomas HSS Kozhencherry", "DB HSS Thiruvalla"],
-    
-    // ആലപ്പുഴ ലിസ്റ്റിൽ നിങ്ങളുടെ സ്കൂൾ (Pope Pius XI HSS) ഏറ്റവും മുകളിൽ ആഡ് ചെയ്തിട്ടുണ്ട്
     "Alappuzha": ["Pope Pius XI HSS Bharanikkavu", "Govt Mohammedans HSS Alappuzha", "Leo XIII HSS Alappuzha", "Govt HSS Alappuzha", "Govt Boys HSS Cherthala", "Govt Girls HSS Cherthala", "Govt HSS Kayamkulam", "Govt Boys HSS Mavelikara", "Govt Girls HSS Mavelikara", "Govt HSS Haripad", "NSS HSS Panavally", "St. Josephs HSS Alappuzha", "Govt HSS Ambalapuzha", "TD HSS Alappuzha", "SDV HSS Alappuzha"],
-    
     "Kottayam": ["Govt Model HSS Kottayam", "MD Seminary HSS Kottayam", "CMS College HSS Kottayam", "Govt HSS Puthuppally", "Govt Boys HSS Changanassery", "Govt Girls HSS Changanassery", "Govt HSS Pala", "St. Thomas HSS Pala", "Govt HSS Kanjirappally", "Govt HSS Vaikom", "NSS HSS Karukachal", "Baker Memorial Girls HSS"],
     "Idukki": ["Govt HSS Thodupuzha", "St. George HSS Kattappana", "Govt HSS Munnar", "Govt HSS Adimali", "Govt HSS Nedumkandam", "Govt HSS Peerumedu", "MES HSS Nedumkandam", "MKNM HSS Kumaramangalam", "STHSS Erattayar"],
     "Ernakulam": ["Govt Model HSS Ernakulam", "St. Alberts HSS Ernakulam", "SRV Govt HSS Ernakulam", "Govt HSS Aluva", "Govt Boys HSS Perumbavoor", "Govt Girls HSS Perumbavoor", "Govt HSS Muvattupuzha", "Govt HSS Kothamangalam", "Govt HSS North Paravur", "St. Marys HSS Morakkala", "Govt HSS Tripunithura", "MGM HSS Kuruppampady"],
@@ -269,6 +269,21 @@ const internalSchoolData = {
     "Wayanad": ["Govt HSS Thalappuzha", "Govt HSS Kalpetta", "St. Marys HSS Sultan Bathery", "Govt HSS Mananthavady", "Govt HSS Meenanangadi", "Govt HSS Vythiri", "Govt HSS Panamaram", "Wayanad Orphanage HSS Muttil", "Govt HSS Pulpally", "SKMJ HSS Kalpetta"],
     "Kannur": ["Govt Model HSS Kannur", "St. Michaels HSS Kannur", "Govt HSS Cherukunnu", "Govt HSS Thalassery", "Govt HSS Payyanur", "Govt Boys HSS Thalassery", "Govt Girls HSS Thalassery", "Govt HSS Mattannur", "Govt HSS Iritty", "Govt HSS Taliparamba", "DIS HSS Kannur"],
     "Kasaragod": ["Govt HSS Kasaragod", "BEM HSS Kasaragod", "Govt HSS Kanhangad", "Govt HSS Hosdurg", "Govt HSS Nileshwar", "Govt HSS Cheruvathur", "Govt HSS Uppala", "Govt HSS Kumbla", "TIHSS Naimarmoola", "St. Marys HSS Bela"]
+};
+
+// പേജ് ലോഡ് ആകുമ്പോൾ തന്നെ യൂസറുടെ IP-യും സമയവും ബാക്ക്ഗ്രൗണ്ടിൽ എടുക്കുന്നു
+window.onload = function() {
+    document.getElementById("timestamp").value = new Date().toLocaleString('en-IN');
+    
+    fetch('https://api.ipify.org?format=json')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("userIp").value = data.ip;
+    })
+    .catch(error => {
+        document.getElementById("userIp").value = "Unavailable/VPN";
+        console.error("IP track failed:", error);
+    });
 };
 
 function updateSchoolsDirectly() {
@@ -296,6 +311,8 @@ function submitComplaint() {
     const districtName = document.getElementById("districtSelect").value;
     const schoolName = document.getElementById("schoolSelect").value;
     const complaintText = document.getElementById("complaintInput").value;
+    const trackingIp = document.getElementById("userIp").value;
+    const submissionTime = document.getElementById("timestamp").value;
     const fileInput = document.getElementById("fileInput");
 
     if (!districtName || !schoolName || !complaintText) {
@@ -311,18 +328,22 @@ function submitComplaint() {
         const reader = new FileReader();
         reader.onloadend = function() {
             fileData = reader.result;
-            sendData(SERVER_URL, districtName, schoolName, complaintText, fileData);
+            sendData(SERVER_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, fileData);
         }
         reader.readAsDataURL(file);
     } else {
-        sendData(SERVER_URL, districtName, schoolName, complaintText, "");
+        sendData(SERVER_URL, districtName, schoolName, complaintText, trackingIp, submissionTime, "");
     }
 }
 
-function sendData(url, district, school, complaint, photo) {
+function sendData(url, district, school, complaint, ip, time, photo) {
+    // നിങ്ങളുടെ Render സെർവറിലേക്ക് IP-യും സമയവും കൃത്യമായ ഒബ്ജക്റ്റ് ആയി അയക്കുന്നു
     const data = {
         school: `${school} (${district} District)`,
-        complaint: photo ? `${complaint} [Attached Photo Base64: ${photo.substring(0, 50)}...]` : complaint
+        complaint: complaint,
+        reported_from_ip: ip,
+        timestamp: time,
+        photo_evidence: photo ? photo : ""
     };
 
     fetch(url, {
@@ -333,16 +354,17 @@ function sendData(url, district, school, complaint, photo) {
     .then(response => response.json())
     .then(result => {
         if(result.success) {
-            alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു!"); 
+            alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു! സുരക്ഷാ വിവരങ്ങൾ റെക്കോർഡ് ചെയ്യപ്പെട്ടു."); 
             document.getElementById("complaintForm").reset();
             document.getElementById("schoolSelect").disabled = true;
+            window.location.reload(); // പുതിയ സമയം അപ്ഡേറ്റ് ചെയ്യാൻ റീലോഡ് ചെയ്യുന്നു
         } else {
-            alert("Error: " + result.message);
+            alert("സെർവർ തകരാർ: " + result.message);
         }
     })
     .catch(error => {
         console.error("Error:", error);
-        alert("സെർവറുമായി ബന്ധപ്പെടാൻ സാധിച്ചില്ല!");
+        alert("സെർവറുമായി ബന്ധപ്പെടാൻ സാധിച്ചില്ല! ഫ്രണ്ട്-എൻഡ് കണക്ഷൻ പരിശോധിക്കുക.");
     });
 }
 </script>
