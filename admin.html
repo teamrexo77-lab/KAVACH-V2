@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAVACH V2 - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gov-blue: #0a2540;
+            --gov-gold: #d4af37;
+            --accent-red: #b91c1c;
+            --text-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border-top: 6px solid var(--gov-gold);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--gov-blue);
+            font-size: 24px;
+        }
+
+        .btn-refresh {
+            background: var(--gov-blue);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-refresh:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: var(--gov-blue);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge-ip {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .img-evidence {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🛡️ KAVACH V2.0 - സുരക്ഷാ പരാതി ഡാഷ്‌ബോർഡ്</h1>
+        <button class="btn-refresh" onclick="fetchComplaints()">🔄 Refresh Data</button>
+    </div>
+
+    <div id="loading" style="text-align: center; padding: 20px; color: #64748b;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</div>
+
+    <table id="reportsTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>തീയതി & സമയം</th>
+                <th>സ്കൂൾ / ജില്ല</th>
+                <th>പരാതി വിവരങ്ങൾ</th>
+                <th>നെറ്റ്‌വർക്ക് IP അഡ്രസ്സ്</th>
+                <th>ചിത്രം (Evidence)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+    
+    <div id="noDataMessage" class="no-data" style="display: none;">പരാതികൾ ഒന്നും തന്നെ ലഭിച്ചിട്ടില്ല!</div>
+</div>
+
+<script>
+    // പേജ് ഓപ്പൺ ചെയ്യുമ്പോൾ തന്നെ ഡാറ്റ എടുക്കുന്നു
+    window.onload = fetchComplaints;
+
+    function fetchComplaints() {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("reportsTable").style.display = "none";
+        document.getElementById("noDataMessage").style.display = "none";
+
+        // നിങ്ങളുടെ Render ബാക്കെൻഡിൽ നിന്നും എല്ലാ പരാതികളും എടുക്കാനുള്ള ലിങ്ക്
+        const GET_REPORTS_URL = "https://kavach-server-5kum.onrender.com/api/reports";
+
+        fetch(GET_REPORTS_URL)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("loading").style.display = "none";
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = ""; // പഴയ ഡാറ്റ ക്ലിയർ ചെയ്യുന്നു
+
+            if (data && data.length > 0) {
+                document.getElementById("reportsTable").style.display = "table";
+                
+                data.forEach(report => {
+                    const row = document.createElement("tr");
+
+                    // ഫോട്ടോ ഉണ്ടെങ്കിൽ കാണിക്കാൻ, ഇല്ലെങ്കിൽ No Image എന്ന് കാണിക്കാൻ
+                    let photoHtml = "<em>No Image</em>";
+                    if (report.photo_evidence && report.photo_evidence.startsWith("data:image")) {
+                        photoHtml = `<img src="${report.photo_evidence}" class="img-evidence" onclick="window.open(this.src)" title="Click to view full image">`;
+                    }
+
+                    row.innerHTML = `
+                        <td>${report.timestamp || 'N/A'}</td>
+                        <td><strong>${report.school || 'N/A'}</strong></td>
+                        <td>${report.complaint || 'N/A'}</td>
+                        <td><span class="badge-ip">${report.reported_from_ip || 'Unknown'}</span></td>
+                        <td>${photoHtml}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                document.getElementById("noDataMessage").style.display = "block";
+            }
+        })
+        .catch(error => {
+            document.getElementById("loading").style.display = "none";
+            console.error("Error fetching data:", error);
+            alert("ഡാറ്റാബേസുമായി ബന്ധപ്പെടാൻ സാധിച്ചില്ല! ബാക്കെൻഡ് സെർവർ റൺ ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക.");
+        });
+    }
+</script>
+</body>
+</html>
