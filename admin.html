@@ -3,124 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAVACH V2 - Admin Dashboard Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>KAVACH V2 - Admin Secure Control Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Gayathri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .login-card {
-            background: #ffffff;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            width: 100%;
-            max-width: 400px;
-            box-sizing: border-box;
-            border-top: 6px solid #d4af37;
-        }
-        h2 {
-            text-align: center;
-            color: #0a2540;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #334155;
-            font-size: 14px;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 15px;
-            background-color: #f8fafc;
-        }
-        input:focus {
-            outline: none;
-            border-color: #0a2540;
-            box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1);
-        }
-        .btn-login {
-            width: 100%;
-            background: #0a2540;
-            color: white;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn-login:hover {
-            background: #1e293b;
-        }
-        .error-msg {
-            color: #b91c1c;
-            font-size: 13px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-            font-weight: 600;
+        body { font-family: 'Montserrat', 'Gayathri', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
+        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #0a2540; }
+        .login-box h2 { text-align: center; color: #0a2540; margin-bottom: 25px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; background: #0a2540; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        button:hover { background: #0f365c; }
+        
+        .dashboard { display: none; max-width: 1000px; margin: 0 auto; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; background: #0a2540; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid #b91c1c; }
+        .card h3 { margin: 0 0 10px 0; color: #0a2540; }
+        .evidence-img { max-width: 250px; border-radius: 6px; margin-top: 12px; display: block; border: 1px solid #e2e8f0; }
+        .meta-info { font-size: 13px; color: #64748b; margin-top: 15px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .ip-block { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        .btn-print { background: #d4af37; color: #0a2540; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 15px; font-size: 13px; }
+        .btn-print:hover { background: #bda032; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .dash-header, .btn-print, .btn-logout { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 30px; padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <h2>🛡️ KAVACH അഡ്മിൻ ലോഗിൻ</h2>
-    
-    <div class="form-group">
-        <label for="username">Admin ID / യൂസർനെയിം</label>
-        <input type="text" id="username" placeholder="യൂസർനെയിം ടൈപ്പ് ചെയ്യുക">
+<div class="login-box" id="loginScreen">
+    <h2>🛡️ KAVACH V2.0<br><span style="font-size:14px;color:#64748b;font-weight:normal;">Secure Control Room</span></h2>
+    <input type="text" id="username" placeholder="Username / ഐഡി">
+    <input type="password" id="password" placeholder="Password / പാസ്‌വേഡ്">
+    <button onclick="handleLogin()">🔒 Secure Login</button>
+</div>
+
+<div class="dashboard" id="dashboardScreen">
+    <div class="dash-header">
+        <div>
+            <h2 style="margin:0; font-size:22px;">🛡️ KAVACH CONTROL ROOM</h2>
+            <p id="userRoleText" style="margin:5px 0 0 0; color:#d4af37; font-weight:bold; font-size:14px;"></p>
+        </div>
+        <button class="btn-logout" onclick="location.reload()" style="background:#b91c1c; width:auto; padding: 10px 20px;">Logout</button>
     </div>
 
-    <div class="form-group">
-        <label for="password">Password / പാസ്‌വേഡ്</label>
-        <input type="password" id="password" placeholder="പാസ്‌വേഡ് ടൈപ്പ് ചെയ്യുക">
-    </div>
-
-    <button type="button" class="btn-login" onclick="checkLogin()">Login / പ്രവേശിക്കുക</button>
-    
-    <div class="error-msg" id="errorMsg">❌ തെറ്റായ യൂസർനെയിം അല്ലെങ്കിൽ പാസ്‌വേഡ്!</div>
+    <div id="complaintsContainer">പരാതികൾ ലോഡ് ചെയ്യുന്നു...</div>
 </div>
 
 <script>
-function checkLogin() {
-    const userInp = document.getElementById("username").value;
-    const passInp = document.getElementById("password").value;
-    const errorMsg = document.getElementById("errorMsg");
+// നിങ്ങളുടെ ഒറിജിനൽ ഫയർബേസ് കോൺഫിഗറേഷൻ ഇതിലേക്ക് ചേർത്തു കഴിഞ്ഞു
+const firebaseConfig = {
+    apiKey: "AIzaSyB5428Bb03X2XSYU1vycSrQCXT9b26eo0E",
+    authDomain: "kavach-v2-1b98e.firebaseapp.com",
+    projectId: "kavach-v2-1b98e",
+    storageBucket: "kavach-v2-1b98e.firebasestorage.app",
+    messagingSenderId: "976570429280",
+    appId: "1:976570429280:web:0ac92c8ba733ba9fa5f805"
+};
 
-    // ലോഗിൻ ഐഡിയും പാസ്‌വേഡും
-    const correctUsername = "admin@school.edu";
-    const correctPassword = "Kavach@2026"; 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+let currentRole = "";
 
-    if (userInp === correctUsername && passInp === correctPassword) {
-        errorMsg.style.display = "none";
-        alert("ലോഗിൻ വിജയകരമായി പൂർത്തിയായി!");
-        // ശരിയാണെങ്കിൽ നേരിട്ട് നിങ്ങളുടെ ഫോംസ്പ്രീ സബ്മിഷൻ പേജിലേക്ക് പോകും
-        window.location.href = "https://formspree.io/forms/xgobqand/submissions";
+function handleLogin() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value;
+
+    if(user === "admin@school.edu" && pass === "Kavach@2026") {
+        currentRole = "admin";
+        startDashboard();
+    } else if(user === "higher@gov.in" && pass === "KavachGov@2026") {
+        currentRole = "higher";
+        startDashboard();
     } else {
-        errorMsg.style.display = "block";
+        alert("തെറ്റായ യൂസർനെയിം അല്ലെങ്കിൽ പാസ്‌വേഡ്!");
     }
 }
-</script>
 
+function startDashboard() {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboardScreen").style.display = "block";
+    
+    if(currentRole === "higher") {
+        document.getElementById("userRoleText").innerText = "Role: Higher Authority (Full Access)";
+    } else {
+        document.getElementById("userRoleText").innerText = "Role: School Admin (Restricted Access)";
+    }
+    
+    fetchComplaints();
+}
+
+function fetchComplaints() {
+    const container = document.getElementById("complaintsContainer");
+    
+    db.collection("complaints").orderBy("time", "desc").onSnapshot(snapshot => {
+        container.innerHTML = "";
+        if(snapshot.empty) { container.innerHTML = "<p style='text-align:center;color:#64748b;'>പരാതികൾ ഒന്നും തന്നെ ലഭിച്ചിട്ടില്ല.</p>"; return; }
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            
+            // അഡ്മിൻ ആണെങ്കിൽ IP കാണിക്കില്ല, ഹയർ അതോറിറ്റിക്ക് മാത്രം കാണിക്കും
+            const ipDisplay = (currentRole === "higher") ? `<span class="ip-block">🔴 IP: ${data.ip}</span>` : `<span class="ip-block" style="background:#e2e8f0;color:#64748b;">🔒 IP: Restricted</span>`;
+            
+            // പ്രിന്റ് ബട്ടൺ ഹയർ അതോറിറ്റിക്ക് മാത്രം
+            const printBtn = (currentRole === "higher") ? `<button class="btn-print" onclick="window.print()">🖨️ Print Report</button>` : '';
+
+            const imgDisplay = (data.imageUrl && data.imageUrl !== "No Image") ? `<a href="${data.imageUrl}" target="_blank"><img src="${data.imageUrl}" class="evidence-img" alt="Evidence Photo"></a>` : '<p style="color:#64748b; font-size:13px; margin: 5px 0 0 0;"><i>ഫോട്ടോകൾ ഒന്നും അപ്‌ലോഡ് ചെയ്തിട്ടില്ല</i></p>';
+
+            const card = `
+                <div class="card">
+                    <h3>📍 ${data.school} (${data.district})</h3>
+                    <p style="font-size:16px; line-height:1.6; color:#0f172a; margin: 10px 0;"><b>പരാതി:</b> ${data.complaint}</p>
+                    <div style="margin-top:10px;"><b>അറ്റാച്ച്മെന്റ്:</b> ${imgDisplay}</div>
+                    <div class="meta-info">
+                        <span>📅 <b>Time:</b> ${data.time}</span>
+                        ${ipDisplay}
+                    </div>
+                    ${printBtn}
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+    }, error => {
+        console.error("Error fetching complaints:", error);
+        container.innerHTML = "<p style='color:red;'>പരാതികൾ ലോഡ് ചെയ്യാൻ സാധിച്ചില്ല. ഫയർബേസ് റൂളുകൾ പരിശോധിക്കുക.</p>";
+    });
+}
+</script>
 </body>
 </html>
