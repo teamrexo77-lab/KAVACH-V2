@@ -8,7 +8,6 @@
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
     <style>
         :root {
@@ -82,17 +81,14 @@
         .field-group { margin-bottom: 24px; }
 
         label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 16px; color: var(--gov-blue); }
-        label span { display: block; font-size: 12px; color: #64748b; font-weight: 400; margin-top: 3px; }
 
-        select, textarea, input[type="file"] {
+        select, textarea {
             width: 100%; padding: 14px; border: 1px solid var(--border-standard);
             border-radius: 6px; box-sizing: border-box; font-size: 15px;
             background-color: #f8fafc; color: var(--text-dark); font-family: inherit;
         }
 
-        textarea { height: 130px; resize: vertical; }
-
-        .upload-container { background: #f8fafc; border: 1px dashed var(--border-standard); padding: 15px; border-radius: 6px; text-align: center; }
+        textarea { height: 150px; resize: vertical; }
 
         .btn-submit {
             width: 100%; background: var(--accent-red); color: white; padding: 16px;
@@ -158,13 +154,6 @@
                 <textarea id="complaintInput" placeholder="ലഹരി ഉപയോഗം, വിതരണം എന്നിവയുമായി ബന്ധപ്പെട്ട വിവരങ്ങൾ ഇവിടെ രേഖപ്പെടുത്താം..." required></textarea>
             </div>
 
-            <div class="field-group">
-                <label>Evidence Photographic Attachment / ചിത്രങ്ങൾ <span>Optional / നിർബന്ധമില്ല</span></label>
-                <div class="upload-container">
-                    <input type="file" id="fileInput" accept="image/*">
-                </div>
-            </div>
-
             <button type="button" class="btn-submit" id="submitBtn" onclick="handleFormSubmission()">🔒 Submit Confidential Report / രഹസ്യമായി സമർപ്പിക്കുക</button>
             <div class="loading-text" id="loadingText">പരാതി സമർപ്പിക്കുന്നു... ദയവായി കാത്തിരിക്കുക...</div>
         </form>
@@ -174,7 +163,6 @@
 </div>
 
 <script>
-// നിങ്ങളുടെ ഒറിജിനൽ ഫയർബേസ് കോൺഫിഗറേഷൻ ഇതിലേക്ക് ചേർത്തു കഴിഞ്ഞു
 const firebaseConfig = {
     apiKey: "AIzaSyB5428Bb03X2XSYU1vycSrQCXT9b26eo0E",
     authDomain: "kavach-v2-1b98e.firebaseapp.com",
@@ -187,7 +175,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 const internalSchoolData = {
     "Thiruvananthapuram": ["SMV Govt Model HSS TVM", "Govt Model HSS Thycaut", "Cotton Hill Govt Girls HSS", "Govt HSS Medical College", "Govt Boys HSS Attingal", "Govt Girls HSS Attingal", "St. Marys HSS Pattom", "Salvation Army HSS", "Govt HSS Kilimanoor", "Govt HSS Nedumangad", "Vithura Govt HSS", "Neyyattinkara Govt HSS", "Balaramapuram Govt HSS", "Govt Model Boys HSS Chalai"],
@@ -229,7 +216,6 @@ async function handleFormSubmission() {
     const district = document.getElementById("districtSelect").value;
     const school = document.getElementById("schoolSelect").value;
     const complaint = document.getElementById("complaintInput").value;
-    const fileInput = document.getElementById("fileInput");
     
     if(!district || !school || !complaint) { alert("എല്ലാ വിവരങ്ങളും പൂരിപ്പിക്കുക!"); return; }
 
@@ -243,18 +229,6 @@ async function handleFormSubmission() {
         ipAddress = ipData.ip;
     } catch(e) { console.log("IP Fetch Failed"); }
 
-    let fileUrl = "No Image";
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const storageRef = storage.ref('complaints/' + Date.now() + '_' + file.name);
-        try {
-            await storageRef.put(file);
-            fileUrl = await storageRef.getDownloadURL();
-        } catch(err) {
-            console.error("Storage upload failed:", err);
-        }
-    }
-
     const timeStamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
     try {
@@ -262,7 +236,6 @@ async function handleFormSubmission() {
             district: district,
             school: school,
             complaint: complaint,
-            imageUrl: fileUrl,
             ip: ipAddress,
             time: timeStamp
         });
@@ -270,7 +243,6 @@ async function handleFormSubmission() {
         alert("പരാതി വിജയകരമായി സമർപ്പിച്ചു!");
         document.getElementById("complaintForm").reset();
         document.getElementById("schoolSelect").disabled = true;
-        // സബ്മിറ്റ് ചെയ്തു കഴിഞ്ഞാൽ പേജ് ഓട്ടോമാറ്റിക്കായി റീഫ്രഷ് ആയി നിങ്ങളുടെ മെയിൻ ഹോം പേജിലേക്ക് തന്നെ വരും
         location.reload();
     } catch (error) {
         alert("പരാതി അയക്കാൻ സാധിച്ചില്ല. ഫയർബേസ് ഡാറ്റാബേസ് ടെസ്റ്റ് മോഡ് ഓൺ ആണെന്ന് ഉറപ്പുവരുത്തുക!");
